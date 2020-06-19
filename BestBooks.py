@@ -20,6 +20,15 @@ def Load_And_Max(file, ColumnName):
 
 def BestRated(file, RateArray, BestRate, TitleHeader, RateHeader):
     BestRatedArray = RateArray
+    BestRatedDir = []
+    dir_counter = 0
+
+    for element in range(len(RateArray)):
+        if RateArray[dir_counter] == BestRate:
+            BestRatedDir.append(dir_counter+1)
+        
+        dir_counter += 1
+
     TitleArray = []
 
     with open(books, mode="r") as csv_file:
@@ -32,6 +41,7 @@ def BestRated(file, RateArray, BestRate, TitleHeader, RateHeader):
 
 
     csv_file.close()
+    print(f'Position = {BestRatedDir}')
     print(' Rate  ', '  Title')
     print('------ ', ' -------')
     for i in range(len(BestRatedArray)):
@@ -41,8 +51,8 @@ if __name__=='__main__':
     bookID = []
     title = []
     rate = []
-    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-    books = os.path.join(THIS_FOLDER, 'files/test01.csv')
+    # THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    books = 'files/test01.csv'
 
     rate, max_rate = Load_And_Max(books,"average_rating")
 
