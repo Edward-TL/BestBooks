@@ -10,7 +10,7 @@ def Load_And_Max(file, ColumnName):
         
 
         for row in csv_reader:
-            """Sinceramente, no encontré la forma de hacer que identifique cuando no es un numero."""
+            """Sinceramente, no encontré la forma de hacer que identifique cuando no es un numero decimal."""
             """Intente RegEx, isalpha y cachar el error en caso de que no pudeira convertir el float."""
             """Asi que sí me puedes ayudar con esto, te lo agradecería infinitamente por que sí me tocó corregir esto a mano en mis anteriores trabajos"""
             if len(row[ColumnName]) <= 4: 
@@ -96,6 +96,10 @@ def ExtractFromTable(file, DirArray, RateHeader, TitleHeader, ConsiderHeader):
             line_counter += 1
 
     csv_file.close()
+
+    if ConsiderHeader == False:
+            for element in range(len(DirArray)):
+                DirArray[element] -= 1
 
     return RateHeaderArray, TitleHeaderArray
 
