@@ -104,7 +104,7 @@ if __name__=='__main__':
     title = []
     rate = []
     cwd = os.getcwd()
-    books = os.path.join(cwd,'test01.csv')
+    books = os.path.join(cwd,'books.csv')
 
     rates, max_rate = Load_And_Max(books,"average_rating")
 
