@@ -34,32 +34,92 @@ def SearchArrayDir(Array, SearchValue):
 
     for element in range(len(Array)):
         if Array[dir_counter] == "DOSN'T COUNT!":
-            print(f'si entró en {dir_counter} a {Array[dir_counter]}')
             ErrorArray.append(dir_counter)
         else:
             if str(Array[dir_counter]) == SearchValue:
-                    print(f'{dir_counter} Entro {Array[dir_counter]} al == {SearchValue} ')
                     ArrayOfEquals.append(dir_counter)
         dir_counter += 1
     
-    print(ErrorArray)
+    # print(ErrorArray)
     return ArrayOfEquals
 
+def ChunkTable(file, DirArray, RateHeader, TitleHeader, ConsiderHeader):
+    with open(books, mode="r", encoding='utf-8') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        line_counter = 0
+        dir_counter = 0
+        print(' Rate  |  Title')
+        print('------ | -------')
+        
+        if ConsiderHeader == False:
+            for element in range(len(DirArray)):
+                DirArray[element] += 1
 
+        for row in csv_reader:
+            if line_counter == DirArray[dir_counter]-1:
+                print(f'   {row[RateHeader]}      {row[TitleHeader]}')
+                dir_counter += 1
+            
+            if dir_counter == (len(DirArray)):
+                print('------ | -------')
+                break
+
+            line_counter += 1
+
+    csv_file.close()
+
+    if ConsiderHeader == False:
+            for element in range(len(DirArray)):
+                DirArray[element] -= 1
+
+def ExtractFromTable(file, DirArray, RateHeader, TitleHeader, ConsiderHeader):
+    with open(books, mode="r", encoding='utf-8') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        line_counter = 0
+        dir_counter = 0
+        RateHeaderArray = []
+        TitleHeaderArray = []
+
+        if ConsiderHeader == False:
+            for element in range(len(DirArray)):
+                DirArray[element] += 1
+
+        for row in csv_reader:
+            if line_counter == DirArray[dir_counter]-1:
+                RateHeaderArray.append(row[RateHeader])
+                TitleHeaderArray.append(row[TitleHeader])
+                dir_counter += 1
+            
+            if dir_counter == (len(DirArray)):
+                break
+
+            line_counter += 1
+
+    csv_file.close()
+
+    return RateHeaderArray, TitleHeaderArray
 
 if __name__=='__main__':
     bookID = []
     title = []
     rate = []
-    # THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
     cwd = os.getcwd()
     books = os.path.join(cwd,'test01.csv')
 
     rates, max_rate = Load_And_Max(books,"average_rating")
 
-    print(rate)
-    print(max_rate)
     MaxDirs = SearchArrayDir(rates, max_rate)
-    print(MaxDirs)
-    # ExtractTable(books, rate, max_rate, "title", "average_rating")
+    """Esto es para el caso en que solo quiero imprimir la tabla, sin extraer la información. O sea, solo ver"""
+    print('\nEjemplo 1:')
+    ChunkTable(books, MaxDirs, "average_rating", "title", False)
+
+    """Esto es para el caso en que quiero extraer los datos de la tabla para interactuar con ellos"""
+    BestRateArray, BestTitlesArray = ExtractFromTable(books, MaxDirs, "average_rating", "title", False)
+    print('\nEjemplo 2:')
+    print(' Rate  |  Title')
+    print('------ | -------')
+    
+    for i in range(len(BestRateArray)):
+        print(f'   {BestRateArray[i]}      {BestTitlesArray[i]}')
+    # ExtractTable(books, rate, max_rate, , "average_rating")
 
