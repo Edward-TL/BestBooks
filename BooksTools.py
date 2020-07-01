@@ -1,7 +1,7 @@
 import csv, os
 from datetime import datetime
 
-def LoadAndMax(file, ColumnToFind):
+def load_and_max(file, column_to_find):
     with open(books, mode="r", encoding='utf-8', newline='') as csv_file:
         csv_reader = csv.reader(csv_file)
         
@@ -15,19 +15,19 @@ def LoadAndMax(file, ColumnToFind):
                 if last_row == '':
                     last_row = row[13]
 
-                if ColumnToFind == 'average_rating': Column_data = float(row[4])
-                elif ColumnToFind == 'num_pages': Column_data = int(row[8])
-                elif ColumnToFind == 'ratings_count': Column_data = int(row[9])
-                elif ColumnToFind == 'text_reviews_count': Column_data = int(row[10])
+                if column_to_find == 'average_rating': Column_data = float(row[4])
+                elif column_to_find == 'num_pages': Column_data = int(row[8])
+                elif column_to_find == 'ratings_count': Column_data = int(row[9])
+                elif column_to_find == 'text_reviews_count': Column_data = int(row[10])
                 else:
                     ColumnArray = 'Data not Found. Check input'
                     Max_value = 0
                     return ColumnArray, Max_value
             except IndexError:
-                if ColumnToFind == 'average_rating': Column_data = float(row[3])
-                elif ColumnToFind == 'num_pages': Column_data =  int(row[7])
-                elif ColumnToFind == 'ratings_count': Column_data = int(row[8])
-                elif ColumnToFind == 'text_reviews_count': Column_data = int(row[9])
+                if column_to_find == 'average_rating': Column_data = float(row[3])
+                elif column_to_find == 'num_pages': Column_data =  int(row[7])
+                elif column_to_find == 'ratings_count': Column_data = int(row[8])
+                elif column_to_find == 'text_reviews_count': Column_data = int(row[9])
                 else:
                     ColumnArray = 'Data not Found. Check input'
                     Max_value = 0
@@ -41,14 +41,14 @@ def LoadAndMax(file, ColumnToFind):
 
     return ColumnArray, Max_value
 
-def MergeSort(Array):
-    if len(Array) > 1:
-        middle = len(Array) // 2
-        Left = Array[:middle]
-        Right = Array[middle:]
+def merge_sort(array):
+    if len(array) > 1:
+        middle = len(array) // 2
+        Left = array[:middle]
+        Right = array[middle:]
 
-        MergeSort(Left)
-        MergeSort(Right)
+        merge_sort(Left)
+        merge_sort(Right)
         
         """SubArrays Iterators"""
         i = 0
@@ -58,57 +58,57 @@ def MergeSort(Array):
 
         while i < len(Left) and j < len(Right):
             if Left[i] < Right[j]:
-                Array[k] = Left[i]
+                array[k] = Left[i]
                 i += 1
             else:
-                Array[k] = Right[j]
+                array[k] = Right[j]
                 j += 1
             
             k += 1
 
         while i < len(Left):
-            Array[k] = Left[i]
+            array[k] = Left[i]
             i += 1
             k += 1
 
         while j < len(Right):
-            Array[k] = Right[j]
+            array[k] = Right[j]
             j += 1
             k += 1
 
-    return Array
+    return array
 
-def TopXOrdered(Array, TopSize):
+def topx_ordered(array, top_size):
     """Considerations.
     1) Array is ORDERED from minor to major.
     2) You can insert Arrays with duplicated values.
     3) You won't insert Sets."""
 
     TopX = []
-    position = len(Array) - 1
+    position = len(array) - 1
     
-    value = Array[position]
+    value = array[position]
     TopX.append(value)
 
     position -= 1
     max_value = value
-    value = Array[position]
+    value = array[position]
 
     TopValues = 1 
 
-    while TopValues < TopSize and position >= 0 :
+    while TopValues < top_size and position >= 0 :
         if value != max_value:
-            TopX.append(Array[position])
+            TopX.append(array[position])
             max_value = value
             TopValues += 1
         position -= 1
-        value = Array[position]
+        value = array[position]
 
         
 
     return TopX
 
-def ObtainArrays(file):
+def obtain_arrays(file):
     with open(books, mode="r", encoding='utf-8', newline='') as csv_file:
         csv_reader = csv.reader(csv_file)
         header = next(csv_reader)
@@ -152,40 +152,68 @@ def ObtainArrays(file):
 
     return data
 
-def CountedArray(ElementsToCount, OriginalArray):
+def counted_array(elements_to_count, original_array):
     CountArray = []
-    for value in range(len(ElementsToCount)):
-        CountArray.append(OriginalArray.count(ElementsToCount[value]))
+    for value in range(len(elements_to_count)):
+        CountArray.append(original_array.count(elements_to_count[value]))
     
     return CountArray
 
-def SortedAndReduce(Array):
-    ReducedSet = set(Array)
+def sorted_and_reduce(array):
+    ReducedSet = set(array)
     ReducedArray = []
     for element in ReducedSet:
         ReducedArray.append(element)
-    ReducedArray = MergeSort(ReducedArray)
+    ReducedArray = merge_sort(ReducedArray)
 
     return ReducedArray
 
+def match_cases(array1, wanted_array1, array2, wanted_array2):
+    """Notice de diference: the original data has to be of the samen lenght,
+    BUT the match cases can differ. This means that I can have 3 match cases
+    on one side and 50 in the other, and it won't make any trouble"""
+    if len(array1)==len(array2):
+        match_cases = []
+
+        #Creating Support dictionaries
+        wanted_cases_1 = {}
+        for data in range(len(wanted_array1)):
+            wanted_cases_1[wanted_array1[data]] = 1
+        
+        wanted_cases_2 = {}
+        for data in range(len(wanted_array2)):
+            wanted_cases_2[wanted_array2[data]] = 1
+        
+        for ub in range(len(array1)):
+            val1 = array1[ub]
+            val2 = array2[ub]
+            if val1 in wanted_cases_1 and val2 in wanted_array2:
+                print(f'Val 1: {val1}, Val 2: {val2}')
+                match_cases.append(ub)
+            
+        
+        return match_cases
+
+    else: return 'Arrays must have the samen lenght'
+
+
 if __name__=='__main__':
     cwd = os.getcwd()
-    books = os.path.join(cwd,'tests/test01.csv')
+    books = os.path.join(cwd,'books.csv')
     
-    rating, max_rating = LoadAndMax(books, 'average_rating')
+    rating, max_rating = load_and_max(books, 'average_rating')
+    reviews, max_reviews = load_and_max(books, 'text_reviews_count')
+    
+    or_rating = rating.copy()
+    or_reviews = reviews.copy()
 
-    rating = MergeSort(rating)
-    rating_list = SortedAndReduce(rating)
-    print(f'List of rates: {rating_list}')
-    array_rating_count = CountedArray(rating_list, rating)
-    print(f'Books with this rate: {array_rating_count}')
-    sum_rating_count = sum(array_rating_count)
-    print(f'SUMA: {sum_rating_count} LEN: {len(rating)}')
+    ordered_rating = merge_sort(rating)
+    ordered_reviews = merge_sort(reviews)
 
-    top5_rating = TopXOrdered(rating, 5)
-    print(f'TOP 5: {top5_rating}')
+    top_rating = topx_ordered(ordered_rating, 32)
+    top_reviews = topx_ordered(ordered_reviews, 952)
+    # print(f'TOP5 Rating: {top5_rating} Reviews: {top_reviews}')
+    # print(f'RATING: {or_rating[:15]}')
 
-    reviews, max_reviews = LoadAndMax(books, 'text_reviews_count')
-    reviews = MergeSort(reviews)
-    top5_reviews = TopXOrdered(reviews, 5)
-    print(top5_reviews)
+    match_cases = match_cases(or_rating, top_rating, or_reviews, top_reviews)
+    print(match_cases)
