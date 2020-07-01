@@ -152,14 +152,40 @@ def ObtainArrays(file):
 
     return data
 
+def CountedArray(ElementsToCount, OriginalArray):
+    CountArray = []
+    for value in range(len(ElementsToCount)):
+        CountArray.append(OriginalArray.count(ElementsToCount[value]))
+    
+    return CountArray
+
+def SortedAndReduce(Array):
+    ReducedSet = set(Array)
+    ReducedArray = []
+    for element in ReducedSet:
+        ReducedArray.append(element)
+    ReducedArray = MergeSort(ReducedArray)
+
+    return ReducedArray
+
 if __name__=='__main__':
     cwd = os.getcwd()
-    books = os.path.join(cwd,'tests/test05.csv')
+    books = os.path.join(cwd,'tests/test01.csv')
     
     rating, max_rating = LoadAndMax(books, 'average_rating')
 
     rating = MergeSort(rating)
-    top5_rating = TopXOrdered(rating, 5)
-    print(top5_rating)
+    rating_list = SortedAndReduce(rating)
+    print(f'List of rates: {rating_list}')
+    array_rating_count = CountedArray(rating_list, rating)
+    print(f'Books with this rate: {array_rating_count}')
+    sum_rating_count = sum(array_rating_count)
+    print(f'SUMA: {sum_rating_count} LEN: {len(rating)}')
 
-    
+    top5_rating = TopXOrdered(rating, 5)
+    print(f'TOP 5: {top5_rating}')
+
+    reviews, max_reviews = LoadAndMax(books, 'text_reviews_count')
+    reviews = MergeSort(reviews)
+    top5_reviews = TopXOrdered(reviews, 5)
+    print(top5_reviews)
