@@ -1,6 +1,72 @@
 import csv, os
 from datetime import datetime
 
+def load_array(file, column_to_find):
+
+    with open(books, mode="r", encoding='utf-8', newline='') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        header = next(csv_reader)
+        column_array = []
+
+        for row in csv_reader:
+            try:
+                last_row = row[12]
+                if last_row == '':
+                    last_row = row[13]
+                #Ordered followinf the fild
+                #First Strings
+                if column_to_find == 'title': column_data = row[1]
+                elif column_to_find == 'authors': column_data = row[2] + ',' + row[3]
+                #Float
+                elif column_to_find == 'average_rating': column_data = float(row[4])
+                #Strings hided as Int
+                elif column_to_find == 'isbn': column_data = row[5]
+                elif column_to_find == 'isbn13': column_data = row[6]
+                #String AF
+                elif column_to_find == 'language_code': column_data = row[7]
+                elif column_to_find == '  num_pages': column_data = int(row[8])
+                elif column_to_find == 'ratings_count': column_data = int(row[9])
+                elif column_to_find == 'text_reviews_count': column_data = int(row[10])
+                #Reason you import Datetime
+                elif column_to_find == 'publication_date': column_data = datetime.strptime(row[11], '%m/%d/%Y')
+                #String
+                elif column_to_find == 'publisher': column_data = row[12]
+                else:
+                    column_data = 'Data not Found. Check input'
+                    
+                    return ColumnArray
+                    
+            except IndexError:
+                #Ordered followinf the fild
+                #First Strings
+                if column_to_find == 'title': column_data = row[1]
+                elif column_to_find == 'authors': column_data = row[2]
+                #Float
+                elif column_to_find == 'average_rating': column_data = float(row[3])
+                #Strings hided as Int
+                elif column_to_find == 'isbn': column_data = row[4]
+                elif column_to_find == 'isbn13': column_data = row[5]
+                #String AF
+                elif column_to_find == 'language_code': column_data = row[6]
+                elif column_to_find == 'num_pages': column_data =  int(row[7])
+                elif column_to_find == 'ratings_count': column_data = int(row[8])
+                elif column_to_find == 'text_reviews_count': column_data = int(row[9])
+                #Reason you import Datetime
+                elif column_to_find == 'publication_date': column_data = datetime.strptime(row[10], '%m/%d/%Y')
+                #String
+                elif column_to_find == 'publisher': column_data = row[11]
+                else:
+                    column_data = 'Data not Found. Check input'
+                    
+                    return column_array
+
+            column_array.append(column_data)
+        
+
+    csv_file.close()
+
+    return column_array
+
 def load_and_max(file, column_to_find):
     with open(books, mode="r", encoding='utf-8', newline='') as csv_file:
         csv_reader = csv.reader(csv_file)
@@ -223,6 +289,7 @@ if __name__=='__main__':
     cwd = os.getcwd()
     books = os.path.join(cwd,'books.csv')
     
+    titles = load_array(books, 'title')
     rating, max_rating = load_and_max(books, 'average_rating')
     reviews, max_reviews = load_and_max(books, 'text_reviews_count')
 
@@ -231,8 +298,21 @@ if __name__=='__main__':
 
     top_rating = topx(rating, 32)
     top_reviews = topx(reviews, 952)
-    # print(f'TOP5 Rating: {top5_rating} Reviews: {top_reviews}')
-    # print(f'RATING: {or_rating[:15]}')
 
     match_cases = match_cases(rating, topc_rating, reviews, topc_reviews)
-    print(match_cases)
+
+    best_titles = []
+    match_reviews = []
+    match_rating = []
+
+    for i in range(len(match_cases)):
+        match = match_cases[i]
+        best_titles.append(titles[match])
+        match_reviews.append(reviews[match])
+        match_rating.append(rating[match])
+
+
+    print(' Rate  |  Revs  |  Title')
+    print('------ | ------ | -------')
+    for match in range(len(match_rating)):
+        print(f'   {match_rating[match]}      {match_reviews[match]}  {best_titles[match]}')
