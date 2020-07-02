@@ -1,5 +1,50 @@
 import csv, os
 from datetime import datetime
+from prettytable import PrettyTable
+
+def obtain_all_arrays(file):
+    with open(books, mode="r", encoding='utf-8', newline='') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        header = next(csv_reader)
+        data = []
+        
+        for row in csv_reader:
+            try:
+                last_row = row[12]
+                if last_row == '':
+                    last_row = row[13]
+
+                title = row[1]
+                authors = row[2] + ',' + row[3]
+                average_rating = float(row[4])
+                isbn = row[5]
+                isbn13 = row[6]
+                lenguage = row[7]
+                num_pages = int(row[8])
+                ratings_count = int(row[9])
+                text_reviews = int(row[10])
+                publication_date = datetime.strptime(row[11], '%m/%d/%Y')
+                publisher = row[12]
+
+            except IndexError:
+                title = row[1]
+                authors = row[2]
+                average_rating = float(row[3])
+                isbn = row[4]
+                isbn13 = row[5]
+                lenguage = row[6]
+                num_pages =  int(row[7])
+                ratings_count = int(row[8])
+                text_reviews = int(row[9])
+                publication_date = datetime.strptime(row[10], '%m/%d/%Y')
+                publisher = row[11]
+                
+            data.append([title, authors, average_rating, isbn, isbn13, lenguage,
+                        num_pages, ratings_count, text_reviews, publication_date, publisher])
+
+    csv_file.close()
+
+    return data
 
 def load_array(file, column_to_find):
 
@@ -156,7 +201,9 @@ def binary_search(array, start, end, search_value):
         return binary_search(array, middle + 1, end, search_value)
     else:
         return binary_search(array, start, middle - 1, search_value)
-    
+
+#Just a Top of X cases
+#Not quite efficent if you want to match between tops
 def topx(array, top_size):
     """Considerations.
     1) Array is ORDERED from minor to major.
@@ -188,6 +235,7 @@ def topx(array, top_size):
 
     return topx
 
+#Want to know all the cases
 def top_condisioned(array, start_value):
     helper_array = sorted_and_reduce(array.copy())
     helpers_end = len(helper_array) - 1
@@ -198,50 +246,6 @@ def top_condisioned(array, start_value):
         top_condisioned.append(helper_array[i])
 
     return top_condisioned
-
-def obtain_arrays(file):
-    with open(books, mode="r", encoding='utf-8', newline='') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        header = next(csv_reader)
-        data = []
-        
-        for row in csv_reader:
-            try:
-                last_row = row[12]
-                if last_row == '':
-                    last_row = row[13]
-
-                title = row[1]
-                authors = row[2] + ',' + row[3]
-                average_rating = float(row[4])
-                isbn = row[5]
-                isbn13 = row[6]
-                lenguage = row[7]
-                num_pages = int(row[8])
-                ratings_count = int(row[9])
-                text_reviews = int(row[10])
-                publication_date = datetime.strptime(row[11], '%m/%d/%Y')
-                publisher = row[12]
-
-            except IndexError:
-                title = row[1]
-                authors = row[2]
-                average_rating = float(row[3])
-                isbn = row[4]
-                isbn13 = row[5]
-                lenguage = row[6]
-                num_pages =  int(row[7])
-                ratings_count = int(row[8])
-                text_reviews = int(row[9])
-                publication_date = datetime.strptime(row[10], '%m/%d/%Y')
-                publisher = row[11]
-                
-            data.append([title, authors, average_rating, isbn, isbn13, lenguage,
-                        num_pages, ratings_count, text_reviews, publication_date, publisher])
-
-    csv_file.close()
-
-    return data
 
 def counted_array(elements_to_count, original_array):
     count_array = []
@@ -296,9 +300,6 @@ if __name__=='__main__':
     topc_rating = top_condisioned(rating, 4.5)
     topc_reviews = top_condisioned(reviews, 1000)
 
-    top_rating = topx(rating, 32)
-    top_reviews = topx(reviews, 952)
-
     match_cases = match_cases(rating, topc_rating, reviews, topc_reviews)
 
     best_titles = []
@@ -311,8 +312,27 @@ if __name__=='__main__':
         match_reviews.append(reviews[match])
         match_rating.append(rating[match])
 
-
     print(' Rate  |  Revs  |  Title')
     print('------ | ------ | -------')
     for match in range(len(match_rating)):
         print(f'   {match_rating[match]}      {match_reviews[match]}  {best_titles[match]}')
+
+    table_bestbooks = PrettyTable()
+    table_bestbooks.field_names = ["Rate", "Reviews", "Titles"]
+    for match in range(len(match_rating)):
+        table_bestbooks.add_row([match_rating[match],match_reviews[match], best_titles[match]])
+
+    print(table_bestbooks)
+
+    print('Table Sorted by Reviews')
+    table_bestbooks.sortby = "Reviews"
+    table_bestbooks.reversesort = True
+    print(table_bestbooks)
+
+    print('Table Sorted by Rate')
+    table_bestbooks.sortby = "Rate"
+    table_bestbooks.reversesort = True
+    print(table_bestbooks)
+    
+
+    
